@@ -128,7 +128,7 @@ public class UserController extends BaseController{
 	
 	
 
-	//登录
+	//用户登录操作
 	@PermissionRequest(requestVal=("10"))
 	@RequestMapping("userLogin")
 	@ResponseBody
