@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shsxt.crm.dao.CustomerDao" >
+  <sql id="Base_Column_List" >
+    id, khno, name, area, cus_manager as cusManager, level, myd, xyd, address, post_code as postCode , phone, fax, 
+    web_site as webSite, yyzzzch, fr, zczj, nyye, khyh, khzh, dsdjh, gsdjh, is_valid as isValid, create_date as createDate, 
+    update_date as updateDate
+  </sql>
+  
+  <select id="queryAllCustomerInfo" parameterType="customerQuery" resultType="customer">
+  SELECT  <include refid="Base_Column_List"/>
+   FROM t_customer 
+   <where>
+  	 is_valid=1 and state=0
+  	 <if test="khno!=null and khno!=''">
+  	 and khno like concat('%',#{khno},'%')
+  	 </if>
+  	 <if test="name!=null and name!=''">
+  	 and name like concat('%',#{name},'%')
+  	 </if>
+   </where>
+  </select>
+  
+  <insert id="insertCustomerInfo" parameterType="customer" >
+  INSERT INTO t_customer ( khno, name, area, cus_manager, level, myd, xyd, address, post_code , phone, fax, 
+    web_site, yyzzzch, fr, zczj, nyye, khyh, khzh, dsdjh, gsdjh,state, is_valid , create_date , update_date) 
+    VALUES(#{khno}, #{name}, #{area}, #{cusManager}, #{level}, #{myd}, #{xyd}, #{address},#{ postCode} ,#{phone}, #{fax}, 
+    #{webSite}, #{yyzzzch}, #{fr},#{ zczj}, #{nyye}, #{khyh}, #{khzh}, #{dsdjh}, #{gsdjh},#{state}, #{isValid} , #{createDate} , 
+    #{updateDate})
+  </insert>
+  
+  <delete id="deleteByCustomer" >
+  update t_customer set is_valid=0 
+  where id in
+   <foreach collection="array" item="item" open="(" separator="," close=")">
+      #{item}
+  </foreach>  
+  </delete>
+ 
+ <update id="updateCustomerInfo" parameterType="customer">
+    update t_customer set name=#{name}, area=#{area}, cus_manager=#{cusManager}, level=#{level}, 
+    myd= #{myd}, xyd=#{xyd}, address=#{address}, post_code =#{postCode}, phone=#{phone}, fax=#{fax},  web_site=#{webSite},
+     yyzzzch=#{yyzzzch}, fr=#{fr}, zczj=#{zczj}, nyye=#{nyye}, khyh=#{khyh}, khzh=#{khzh}, dsdjh=#{dsdjh}, gsdjh=#{gsdjh},
+     state=#{state}, is_valid =#{isValid}, update_date= #{updateDate}
+    where id=#{id}
+ </update>
+ 
+  <select id="queryContribute" parameterType="CustomerContributeQuery" resultType="CustomerContributeQuery">
+ 	SELECT c.name , IFNULL(sum(d.sum),0) as total FROM t_customer c LEFT JOIN t_customer_order o ON c.id=o.cus_id LEFT JOIN t_order_details d ON o.id=d.order_id
+	<where>
+	 o.state=1 
+	 <if test="name!=null and name!=''">
+	 and c.name like concat('%',#{name},'%')
+	 </if>
+	</where>
+	GROUP BY name
+  </select>
+  
+   	<select id="queryLevelCount"  resultType="CustomerContributeQuery">
+ 	SELECT level, COUNT(1) as count
+ 	 from t_customer
+ 	  GROUP BY level
+ 	</select>
+ 	
+ 	<select id="queryServeCount"  resultType="CustomerContributeQuery">
+ 	SELECT serve_type as serveType , COUNT(1) as count2 
+ 	from t_customer_serve
+ 	 GROUP BY serve_type
+ 	</select>
+ 	
+ 	<select id="queryLossCustomer"  resultType="Customer">
+	 	<![CDATA[
+			SELECT
+		c.id,
+		c.khno,
+		c. NAME,
+		c.cus_manager AS cusManager
+		FROM
+			t_customer c
+		WHERE
+			c.is_valid = 1
+		AND c.state = 0
+		AND DATE_ADD(c.create_date,INTERVAL 6 MONTH) < NOW()
+		AND NOT EXISTS (
+		SELECT DISTINCT
+				cus_id 
+			FROM
+				t_customer_order o
+			WHERE
+				o.is_valid = 1
+			AND c.id = o.cus_id
+			AND DATE_ADD(
+			o.order_date,INTERVAL 6 MONTH
+			) > NOW())
+		]]>
+	 	
+ 	</select>
+ 	
+ 	 <update id="updateCusState" >
+      update t_customer set state=1
+      where id in
+      <foreach collection="array" item="item" open="(" separator="," close=")">
+         #{item}
+      </foreach>
+   </update>
+   
+ 	
+</mapper>

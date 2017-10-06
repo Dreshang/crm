@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shsxt.crm.dao.CustomerOrderDao" >
+ 
+  <sql id="Base_Column_List" >
+    id, cus_id, order_no, order_date, address, state, create_date, update_date, is_valid
+  </sql>
+  <select id="queryById" resultType="customerOrder"  >
+    select 
+ 	 id, cus_id as cid, order_no as orderNo, order_date as orderDate, address, state, create_date as createDate, update_date as updateDate
+    from t_customer_order
+    where is_valid=1 and cus_id = #{cid}
+  </select>
+  
+  <select id="queryLastById" resultType="customerOrder" >
+	  SELECT
+		 id ,order_date AS orderDate
+		FROM
+			t_customer_order
+		WHERE
+			cus_id = 2
+		AND is_valid = 1
+		AND state = 1
+		ORDER BY
+			order_date DESC
+		LIMIT 0,1
+  </select>
+  
+</mapper>

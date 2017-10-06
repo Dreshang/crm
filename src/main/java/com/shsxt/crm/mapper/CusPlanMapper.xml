@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shsxt.crm.dao.CustomerPlanDao">
+
+<!-- 查 -->
+    <select id="queryCusPlanById" resultType="CustomerPlan">
+        SELECT id, sale_chance_id AS saleChanceId,plan_item AS planItem ,plan_date AS planDate,
+    		exe_affect AS exeAffect,create_date AS createDate,update_date AS updateDate FROM t_cus_dev_plan
+		WHERE sale_chance_id=#{saleChanceId} and is_valid=1
+     </select>
+  
+  <!-- 增 -->
+  <insert id="insertCusPlan" parameterType="CustomerPlan">
+			 insert  INTO t_cus_dev_plan ( sale_chance_id ,plan_item ,plan_date,
+    		exe_affect,create_date,update_date,is_valid) VALUES(#{saleChanceId},
+    		#{planItem},#{planDate},#{exeAffect},#{createDate},#{updateDate},#{isValid})
+  </insert>
+     <!-- 改 -->
+     <update id="updateupdeteCusPlan" parameterType="CustomerPlan">
+      update t_cus_dev_plan set  plan_item= #{planItem},plan_date=#{planDate},
+    		exe_affect=#{exeAffect},update_date=#{updateDate},is_valid=#{isValid}
+    		where id=#{id} and sale_chance_id=#{saleChanceId}
+     </update>
+     
+     <!-- 删除 -->
+    <delete id="deleteCusDevPlans">
+    update t_cus_dev_plan set is_valid=0 where id=#{id} and sale_chance_id=#{saleChanceId}
+    </delete>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shsxt.crm.dao.RoleDao">
+
+<!-- 查询角色 -->
+<select id="queryAllRoles" resultType="roleType" parameterType="roleQuery">
+SELECT id,role_name as roleName, role_remark as roleRemark,create_date as createDate,update_date as updateDate 
+FROM t_role 
+<where>
+is_valid=1
+<if test="null!=roleName and roleName !=''">
+and role_name like concat('%',#{roleName},'%')
+</if>
+</where> 
+</select>
+
+<!-- 添加角色 -->
+ <insert id="insertRole" parameterType="roleType">
+	insert into t_role (role_name,role_remark,create_date,update_date,is_valid)
+	values(#{roleName},#{roleRemark},#{createDate},#{updateDate},#{isValid})
+</insert>
+
+	<update id="updateRole" parameterType="roleType">
+		update t_role
+		set role_name=#{roleName} ,role_remark= #{roleRemark},create_date=
+		#{createDate},update_date=#{updateDate},is_valid=#{isValid}
+		where id=#{id}
+	</update>
+
+	<delete id="deleteRole">
+		update t_role
+		set is_valid=0
+		where id in 
+		 <foreach collection="array" item="item" open="(" separator="," close=")">
+	      #{item}
+	  </foreach>  
+	</delete>
+
+
+	<select id="queryByRoleName" parameterType="string" resultType="roleType">
+		select id,role_name as roleName,role_remark as roleRemark
+		from t_role
+		<where>
+			is_valid=1 and role_name= #{roleName}
+		</where>
+	</select>
+</mapper>

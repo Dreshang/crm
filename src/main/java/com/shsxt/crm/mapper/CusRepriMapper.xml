@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shsxt.crm.dao.CustomerReprieveDao" >
+
+<!-- 查询暂缓措施 -->
+   <select id="queryReprieve" resultType="CustomerReprieve"  >
+   SELECT id,loss_id as lossId ,measure,create_date as createDate,
+	update_date as updateDate
+	 FROM t_customer_reprieve 
+	 where is_valid=1 and loss_id=#{lossId}
+   </select>
+
+	<insert id="insertCusRepri" parameterType="customerReprieve">
+	INSERT INTO t_customer_reprieve (loss_id,measure,is_valid,create_date,update_date)
+	 VALUES(#{lossId},#{measure},#{isValid},#{createDate},#{updateDate})
+	</insert>
+	
+	<update id="updateCusRepri" parameterType="customerReprieve">
+	UPDATE t_customer_reprieve 
+	SET measure = #{measure},update_date=#{updateDate}
+	where id=#{id}
+	</update>
+   
+   </mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shsxt.crm.dao.OrderDetailDao">
+<select id="queryOrderDetail" parameterType="OrderDetailQuery" resultType="OrderDetail">
+	SELECT id,order_id as orderId,goods_name as goodsName,goods_num as goodsNum,unit,
+	price,sum,create_date as createDate , update_date as updateDate from t_order_details
+	WHERE is_valid=1 and order_id=#{orderId}
+</select>
+
+<select id="queryTotalPrice" resultType="double">
+SELECT SUM(sum) as total from t_order_details WHERE order_id=#{orderId}
+</select>
+
+<select id="queryByOrderId" resultType="CustomerOrder">
+		select 
+ 	 id, cus_id as cid, order_no as orderNo, order_date as orderDate, address, state, create_date as createDate, update_date as updateDate
+    from t_customer_order
+    where is_valid=1 and id = #{orderId}
+</select>
+
+
+</mapper>

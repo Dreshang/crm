@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shsxt.crm.dao.CustomerLossDao" >
+ 
+  <sql id="Base_Column_List" >
+    id, cus_no, cus_name, cus_manager, last_order_time, confirm_loss_time, state, loss_reason, 
+    is_valid, create_date, update_date
+  </sql>
+  
+     <!-- 更新流失状态 -->
+	<update id="updateCusLossState" parameterType="customerLoss" >
+		UPDATE t_customer_loss SET state=#{state},loss_reason=#{lossReason},confirm_loss_time=#{confirmLossTime} WHERE id=#{id}
+	
+	</update>
+	
+	
+  
+  
+   <!-- 初始化查询map -->
+  <select id="qureyCustomerLossById" resultType="map"  >
+	SELECT id,state, cus_no as cusNo, cus_name as cusName, cus_manager as cusManager, last_order_time as lastOrderTime,
+	confirm_loss_time as confirmLossTime, loss_reason as lossReason 
+	FROM t_customer_loss 
+	WHERE id=#{id}
+  </select>
+  
+  
+  
+  <!-- 初始化查询list -->
+  <select id="qureyCustomerLoss" resultType="customerLoss" parameterType="customerLossQuery" >
+    select 
+   	id, cus_no as cusNo, cus_name as cusName, cus_manager as cusManager, last_order_time as lastOrderTime, confirm_loss_time as confirmLossTime,
+   	 state, loss_reason as lossReason, create_date as createDate, update_date as updateDate
+    from t_customer_loss
+   <where>
+  	 is_valid = 1
+   <if test="cusNo!=null and cusNo!=''">
+   and cus_no like concat ('%',#{cusNo},'%')
+   </if>
+   <if test="cusName!=null and cusName!=''">
+   and cus_name like concat('%',#{cusName},'%')
+   </if>
+   <if test="cusManager!=null and cusManager!=''">
+   and cus_manager like concat('%',#{cusManager},'%')
+   </if>
+   <if test="createDate!=null and createDate!=''">
+  <![CDATA[
+    and create_date <= #{createDate}
+  ]]>
+   </if>
+   </where>
+  </select>
+  
+  <!-- 批量添加 -->
+  <insert id="insertCusLoss" parameterType="list">
+     insert into t_customer_loss(cus_no,cus_name,cus_manager,last_order_time,state,is_valid,create_date,update_date)
+       values
+     <foreach collection="list" item="item" separator=",">
+       (
+	       #{item.cusNo},#{item.cusName},#{item.cusManager},
+	       #{item.lastOrderTime},#{item.state},#{item.isValid},#{item.createDate},#{item.updateDate}
+       )
+     </foreach>
+  
+  
+  </insert>
+  
+  
+  
+  
+</mapper>
