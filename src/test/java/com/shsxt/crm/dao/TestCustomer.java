@@ -19,4 +19,10 @@ public class TestCustomer extends BaseTest{
 		System.out.println(customerDao.queryAllCustomerInfo(customerQuery));
 	}
 
+	
+	@Test
+	public void test1() {
+		CustomerQuery customerQuery=new CustomerQuery();
+		System.out.println(customerDao.queryAllCustomerInfo(customerQuery));
+	}
 }
