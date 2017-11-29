@@ -23,4 +23,8 @@ public class TestCustomer extends BaseTest{
 	public void hello() {
 		System.out.println("hello");
 	}
+	@Test
+	public void hello1() {
+		System.out.println("hello");
+	}
 }
