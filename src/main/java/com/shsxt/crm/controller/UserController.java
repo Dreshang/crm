@@ -26,8 +26,10 @@ import com.shsxt.crm.vo.User;
 import com.shsxt.crm.vo.UserInfo;
 
 
-@Controller
+
+
 @RequestMapping("user")
+@Controller
 public class UserController extends BaseController{
 	
 	@Autowired
